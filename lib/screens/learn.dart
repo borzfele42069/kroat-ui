@@ -141,20 +141,26 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                 ),
               ),
               const SizedBox(height: 40),
-              TextField(
-                controller: _inputController,
-                focusNode: _focusNode,
-                enabled: !_isCorrect && _attemptCount < 2,
-                onSubmitted: !_isCorrect && _attemptCount < 2 ? (_) => _submit() : null,
-                decoration: InputDecoration(
-                  hintText: _attemptCount == 1 && !_isCorrect ? 'Try again...' : 'Enter the Hungarian word',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _attemptCount < 2 ? _submit : null,
-                child: const Text('Submit'),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _inputController,
+                      focusNode: _focusNode,
+                      enabled: !_isCorrect && _attemptCount < 2,
+                      onSubmitted: !_isCorrect && _attemptCount < 2 ? (_) => _submit() : null,
+                      decoration: InputDecoration(
+                        hintText: _attemptCount == 1 && !_isCorrect ? 'Try again...' : 'Enter the Hungarian word',
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: _attemptCount < 2 ? _submit : null,
+                    child: const Text('Submit'),
+                  ),
+                ],
               ),
             ],
           ),
