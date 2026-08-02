@@ -118,6 +118,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
 
     WordService.updateWord(_currentIndex, word);
     Future.delayed(const Duration(milliseconds: 1000), _selectNextWord).then((_) => setState(() {}));
+    Future.delayed(const Duration(milliseconds: 1000), () => _focusNode.requestFocus());
   }
 
   @override
