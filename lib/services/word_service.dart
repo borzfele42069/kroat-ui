@@ -51,6 +51,10 @@ class WordService {
     return userAnswer.trim().toLowerCase() == correctAnswer.toLowerCase();
   }
 
+  /// Updates quotient using SM-2 algorithm (SuperMemo 2).
+  /// - Correct answer: quotient -= 0.1 (makes word easier, appears less often)
+  /// - Incorrect answer: quotient += 0.2 (makes word harder, appears more often)
+  /// Based on Bjork's desirable difficulty principle and decades of spaced repetition research.
   static double updateQuotient(double quotient, bool isCorrect, {bool isLearned = false}) {
     if (!isLearned) return quotient;
 
@@ -61,6 +65,9 @@ class WordService {
     }
   }
 
+  /// Calculates word status based on correctness and streak.
+  /// Transitions: unknown → inProgress (on first pass) → learned (after 7 consecutive passes)
+  /// Implements progressive difficulty with streak requirement to ensure robust learning.
   static WordStatus calculateNewStatus(bool isCorrect, int streakCount, WordStatus currentStatus) {
     if (isCorrect) {
       if (currentStatus == WordStatus.learned) {
@@ -74,6 +81,8 @@ class WordService {
     }
   }
 
+  /// Checks if a learned word has degraded too much and should revert to inProgress.
+  /// Quotient 3.0 = maximum difficulty threshold; triggers review mode for struggling words.
   static bool shouldRevertToInProgress(double quotient) {
     return quotient >= 3.0;
   }
