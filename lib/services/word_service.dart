@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/word.dart';
+import '../config/constants.dart';
 
 class WordService {
   static final List<Word> _defaultWords = [
@@ -20,7 +21,7 @@ class WordService {
   static Future<void> initialize() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final savedData = prefs.getString('words');
+      final savedData = prefs.getString(AppConstants.prefKeyWords);
 
       if (savedData != null) {
         final List<dynamic> decoded = jsonDecode(savedData);
@@ -37,7 +38,7 @@ class WordService {
   static Future<void> _saveWords() async {
     final prefs = await SharedPreferences.getInstance();
     final encoded = jsonEncode(words.map((w) => w.toJson()).toList());
-    await prefs.setString('words', encoded);
+    await prefs.setString(AppConstants.prefKeyWords, encoded);
   }
 
   static Future<void> updateWord(int index, Word word) async {
@@ -76,9 +77,9 @@ class WordService {
     if (!isLearned) return quotient;
 
     if (isCorrect) {
-      return (quotient - 0.1).clamp(0.5, 3.0);
+      return (quotient - AppConstants.quotientDecrement).clamp(AppConstants.quotientMin, AppConstants.quotientMax);
     } else {
-      return (quotient + 0.2).clamp(0.5, 3.0);
+      return (quotient + AppConstants.quotientIncrement).clamp(AppConstants.quotientMin, AppConstants.quotientMax);
     }
   }
 
@@ -89,7 +90,7 @@ class WordService {
     if (isCorrect) {
       if (currentStatus == WordStatus.learned) {
         return WordStatus.learned;
-      } else if (streakCount >= 7) {
+      } else if (streakCount >= AppConstants.streakRequiredForLearned) {
         return WordStatus.learned;
       }
       return WordStatus.inProgress;
@@ -101,6 +102,6 @@ class WordService {
   /// Checks if a learned word has degraded too much and should revert to inProgress.
   /// Quotient 3.0 = maximum difficulty threshold; triggers review mode for struggling words.
   static bool shouldRevertToInProgress(double quotient) {
-    return quotient >= 3.0;
+    return quotient >= AppConstants.quotientThresholdForRevert;
   }
 }
