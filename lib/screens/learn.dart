@@ -125,6 +125,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
             TextField(
               controller: _inputController,
               enabled: _attemptCount < 2,
+              onSubmitted: _attemptCount < 2 ? (_) => _submit() : null,
               decoration: InputDecoration(
                 hintText: _attemptCount == 1 && !_isCorrect ? 'Try again...' : 'Enter the Hungarian word',
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
