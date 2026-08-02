@@ -41,7 +41,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     if (_isCorrect) {
       return _attemptCount == 1 ? Colors.green.withValues(alpha: 0.3) : Colors.yellow.withValues(alpha: 0.3);
     }
-    return Colors.red.withValues(alpha: _attemptCount == 1 ? 0.5 : 0.3);
+    return Colors.red.withValues(alpha: _attemptCount == 1 ? 0.3 : 0.7);
   }
 
   Color _getBorderColor() {
