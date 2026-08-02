@@ -87,7 +87,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
       _answerRevealed = true;
     });
 
-    Future.delayed(const Duration(milliseconds: 1500), () {
+    Future.delayed(const Duration(milliseconds: 800), () {
       final word = WordService.words[_currentIndex];
       word.streakCount++;
       word.lastReviewedAt = DateTime.now();
