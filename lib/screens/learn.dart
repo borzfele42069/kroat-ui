@@ -106,7 +106,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
       _answerRevealed = true;
     });
 
-    Future.delayed(const Duration(milliseconds: 2000), () {
+    Future.delayed(const Duration(milliseconds: 800), () {
       final word = WordService.words[_currentIndex];
       word.lastReviewedAt = DateTime.now();
       word.quotient = WordService.updateQuotient(word.quotient, false, isLearned: word.status == WordStatus.learned);
