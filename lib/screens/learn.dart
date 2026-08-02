@@ -156,9 +156,15 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                     ),
                   ),
                   const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: _attemptCount < 2 ? _submit : null,
-                    child: const Text('Submit'),
+                  SizedBox(
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: _attemptCount < 2 ? _submit : null,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: const Text('Submit'),
+                    ),
                   ),
                 ],
               ),
