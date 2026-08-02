@@ -95,5 +95,35 @@ void main() {
       expect(restored.streakCount, equals(original.streakCount));
       expect(restored.quotient, equals(original.quotient));
     });
+
+    test('word deserializes with lastReviewedAt timestamp', () {
+      final timestamp = '2024-01-15T10:30:00.000Z';
+      final json = {
+        'croatian': 'Test',
+        'hungarian': 'Teszt',
+        'status': 'WordStatus.learned',
+        'streakCount': 3,
+        'quotient': 1.5,
+        'lastReviewedAt': timestamp,
+      };
+      final word = Word.fromJson(json);
+
+      expect(word.lastReviewedAt, isNotNull);
+      expect(word.lastReviewedAt, equals(DateTime.parse(timestamp)));
+    });
+
+    test('word with invalid status deserializes to unknown', () {
+      final json = {
+        'croatian': 'Test',
+        'hungarian': 'Teszt',
+        'status': 'WordStatus.invalid',
+        'streakCount': 0,
+        'quotient': 1.0,
+        'lastReviewedAt': null,
+      };
+      final word = Word.fromJson(json);
+
+      expect(word.status, equals(WordStatus.unknown));
+    });
   });
 }

@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:kroat_ui/services/word_service.dart';
 import 'package:kroat_ui/models/word.dart';
+import 'dart:convert';
 
 void main() {
   setUpAll(() async {
@@ -202,6 +204,51 @@ void main() {
     test('8 streak stays learned', () {
       final status = WordService.calculateNewStatus(true, 8, WordStatus.learned);
       expect(status, equals(WordStatus.learned));
+    });
+  });
+
+  group('WordService - Persistence', () {
+    test('loads saved words from SharedPreferences', () async {
+      final savedWords = [
+        Word(croatian: 'Zdravo', hungarian: 'Szia', status: WordStatus.learned, streakCount: 5),
+        Word(croatian: 'Hvala', hungarian: 'Köszönöm', status: WordStatus.inProgress, streakCount: 2),
+      ];
+      final encoded = jsonEncode(savedWords.map((w) => w.toJson()).toList());
+
+      SharedPreferences.setMockInitialValues({'words': encoded});
+      await WordService.initialize();
+
+      expect(WordService.words.length, equals(2));
+      expect(WordService.words[0].croatian, equals('Zdravo'));
+      expect(WordService.words[0].status, equals(WordStatus.learned));
+      expect(WordService.words[1].croatian, equals('Hvala'));
+      expect(WordService.words[1].streakCount, equals(2));
+    });
+
+    test('updateWord modifies word at index', () async {
+      SharedPreferences.setMockInitialValues({});
+      await WordService.initialize();
+
+      final updatedWord = Word(
+        croatian: 'Hvala',
+        hungarian: 'Köszönöm',
+        status: WordStatus.learned,
+        streakCount: 7,
+      );
+      await WordService.updateWord(1, updatedWord);
+
+      expect(WordService.words[1].status, equals(WordStatus.learned));
+      expect(WordService.words[1].streakCount, equals(7));
+    });
+
+    test('updateWord ignores out of bounds index', () async {
+      SharedPreferences.setMockInitialValues({});
+      await WordService.initialize();
+
+      final originalWord = WordService.words[0];
+      await WordService.updateWord(999, Word(croatian: 'New', hungarian: 'New'));
+
+      expect(WordService.words[0], equals(originalWord));
     });
   });
 }
