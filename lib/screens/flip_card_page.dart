@@ -16,13 +16,13 @@ class _FlipCardPageState extends State<FlipCardPage> {
 
   void _previousCard() {
     setState(() {
-      _currentIndex = (_currentIndex - 1 + words.length) % words.length;
+      _currentIndex = WordService.prevIndex(_currentIndex, words.length);
     });
   }
 
   void _nextCard() {
     setState(() {
-      _currentIndex = (_currentIndex + 1) % words.length;
+      _currentIndex = WordService.nextIndex(_currentIndex, words.length);
     });
   }
 
