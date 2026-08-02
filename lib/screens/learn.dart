@@ -107,23 +107,28 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                     border: Border.all(color: _getBorderColor(), width: 2),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Stack(
                     children: [
-                      Text(
-                        word,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                      Center(
+                        child: Text(
+                          word,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       if (_attemptCount > 0)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16),
-                          child: Text(
-                            _isCorrect ? 'Nice!' : (_attemptCount == 1 ? 'Try again.' : 'Next time.'),
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: _isCorrect ? Colors.green : Colors.red,
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: Text(
+                              _isCorrect ? 'Nice!' : (_attemptCount == 1 ? 'Try again.' : 'Next time.'),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                color: _isCorrect ? Colors.green : Colors.red,
+                              ),
                             ),
                           ),
                         ),
