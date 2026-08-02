@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import '../services/word_service.dart';
+import '../models/word.dart';
 
 class LearnScreen extends StatefulWidget {
   const LearnScreen({super.key});
@@ -9,13 +11,15 @@ class LearnScreen extends StatefulWidget {
 }
 
 class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin {
-  int _currentIndex = 0;
-  int _attemptCount = 0;
-  bool _isCorrect = false;
   late AnimationController _shakeController;
   late Animation<Offset> _shakeAnimation;
   final _inputController = TextEditingController();
   final _focusNode = FocusNode();
+
+  int _currentIndex = 0;
+  int _attemptCount = 0;
+  bool _isCorrect = false;
+  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -24,7 +28,35 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     _shakeAnimation = Tween<Offset>(begin: Offset.zero, end: const Offset(0.02, 0)).animate(
       CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn),
     );
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await WordService.initialize();
+    setState(() {
+      _isInitialized = true;
+      _selectNextWord();
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
+  }
+
+  void _selectNextWord() {
+    _currentIndex = _selectWordByQuotient();
+    _attemptCount = 0;
+    _isCorrect = false;
+    _inputController.clear();
+  }
+
+  int _selectWordByQuotient() {
+    final random = Random();
+    final totalWeight = WordService.words.fold<double>(0, (sum, word) => sum + word.quotient);
+    double pick = random.nextDouble() * totalWeight;
+
+    for (int i = 0; i < WordService.words.length; i++) {
+      pick -= WordService.words[i].quotient;
+      if (pick <= 0) return i;
+    }
+    return 0;
   }
 
   @override
@@ -58,27 +90,64 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
 
     _inputController.clear();
 
-    if (correct || _attemptCount >= 2) {
-      Future.delayed(const Duration(milliseconds: 1000), _nextWord);
+    if (correct) {
+      _handleCorrectAnswer();
+    } else if (_attemptCount >= 2) {
+      _handleSecondFailure();
     } else {
       _triggerShake();
       _focusNode.requestFocus();
     }
   }
 
-  void _nextWord() {
-    setState(() {
-      _currentIndex = WordService.nextIndex(_currentIndex, WordService.words.length);
-      _attemptCount = 0;
-      _isCorrect = false;
-      _inputController.clear();
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
+  void _handleCorrectAnswer() {
+    final word = WordService.words[_currentIndex];
+    word.streakCount++;
+    word.lastReviewedAt = DateTime.now();
+
+    if (word.status == WordStatus.learned) {
+      word.quotient = (word.quotient * 0.8).clamp(0.5, 3.0);
+    } else if (word.streakCount >= 3) {
+      word.status = WordStatus.learned;
+      word.quotient = 1.0;
+    } else {
+      word.status = WordStatus.inProgress;
+    }
+
+    WordService.updateWord(_currentIndex, word);
+    Future.delayed(const Duration(milliseconds: 1000), _selectNextWord).then((_) => setState(() {}));
+    Future.delayed(const Duration(milliseconds: 1000), () => _focusNode.requestFocus());
+  }
+
+  void _handleSecondFailure() {
+    final word = WordService.words[_currentIndex];
+
+    if (word.status == WordStatus.learned) {
+      word.quotient = (word.quotient * 1.5).clamp(0.5, 3.0);
+      if (word.quotient >= 3.0) {
+        word.status = WordStatus.inProgress;
+        word.streakCount = 0;
+      }
+    } else {
+      word.status = WordStatus.inProgress;
+      word.streakCount = 0;
+    }
+
+    word.lastReviewedAt = DateTime.now();
+    WordService.updateWord(_currentIndex, word);
+    Future.delayed(const Duration(milliseconds: 1000), _selectNextWord).then((_) => setState(() {}));
   }
 
   @override
   Widget build(BuildContext context) {
-    final word = WordService.words[_currentIndex].$1;
+    if (!_isInitialized) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Learn')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final word = WordService.words[_currentIndex];
     final screenSize = MediaQuery.of(context).size;
     final cardWidth = (screenSize.width * 0.8).clamp(0.0, 400.0);
 
@@ -111,7 +180,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                     children: [
                       Center(
                         child: Text(
-                          word,
+                          word.croatian,
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                         ),
@@ -185,6 +254,11 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                     child: const Text('Submit'),
                   ),
                 ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '${word.status.name} | Streak: ${word.streakCount} | Quotient: ${word.quotient.toStringAsFixed(2)}',
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
           ),
