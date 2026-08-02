@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'screens/main_menu.dart';
+import 'services/word_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await WordService.initialize();
   runApp(const MyApp());
 }
 

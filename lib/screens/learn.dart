@@ -19,7 +19,6 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   int _currentIndex = 0;
   int _attemptCount = 0;
   bool _isCorrect = false;
-  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -28,15 +27,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     _shakeAnimation = Tween<Offset>(begin: Offset.zero, end: const Offset(0.02, 0)).animate(
       CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn),
     );
-    _initialize();
-  }
-
-  Future<void> _initialize() async {
-    await WordService.initialize();
-    setState(() {
-      _isInitialized = true;
-      _selectNextWord();
-    });
+    _selectNextWord();
     WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
   }
 
@@ -131,13 +122,6 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    if (!_isInitialized) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Learn')),
-        body: const Center(child: CircularProgressIndicator()),
-      );
-    }
-
     final word = WordService.words[_currentIndex];
     final screenSize = MediaQuery.of(context).size;
     final cardWidth = (screenSize.width * 0.8).clamp(0.0, 400.0);
