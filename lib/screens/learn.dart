@@ -161,6 +161,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                     child: ElevatedButton(
                       onPressed: _attemptCount < 2 ? _submit : null,
                       style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.zero,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: const Text('Submit'),
