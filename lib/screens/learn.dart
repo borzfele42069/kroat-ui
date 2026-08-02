@@ -47,14 +47,6 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     return Colors.red.withValues(alpha: _attemptCount == 1 ? 0.3 : 0.7);
   }
 
-  Color _getBorderColor() {
-    if (_attemptCount == 0) return Colors.grey;
-    if (_isCorrect) {
-      return _attemptCount == 1 ? Colors.green : Colors.yellow;
-    }
-    return Colors.red;
-  }
-
   void _submit() {
     final answer = _inputController.text;
     final correct = WordService.isCorrectAnswer(_currentIndex, answer);
@@ -106,8 +98,14 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: _getBackgroundColor(),
-                    border: Border.all(color: _getBorderColor(), width: 2),
                     borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Stack(
                     children: [
@@ -144,16 +142,31 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
               Row(
                 children: [
                   Expanded(
-                    child: TextField(
-                      controller: _inputController,
-                      focusNode: _focusNode,
-                      enabled: !_isCorrect && _attemptCount < 2,
-                      onSubmitted: !_isCorrect && _attemptCount < 2 ? (_) => _submit() : null,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: _attemptCount == 1 && !_isCorrect ? 'Try again...' : 'Enter the Hungarian word',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        controller: _inputController,
+                        focusNode: _focusNode,
+                        enabled: !_isCorrect && _attemptCount < 2,
+                        onSubmitted: !_isCorrect && _attemptCount < 2 ? (_) => _submit() : null,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: _attemptCount == 1 && !_isCorrect ? 'Try again...' : 'Enter the Hungarian word',
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                        ),
                       ),
                     ),
                   ),
