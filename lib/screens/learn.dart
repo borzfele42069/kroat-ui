@@ -85,64 +85,68 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     final word = WordService.words[_currentIndex].$1;
+    final screenSize = MediaQuery.of(context).size;
+    final cardWidth = (screenSize.width * 0.8).clamp(0.0, 400.0);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Learn')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SlideTransition(
-              position: _shakeAnimation,
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: _getBackgroundColor(),
-                      border: Border.all(color: _getBorderColor(), width: 2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      word,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  if (_attemptCount > 0)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
+      body: Center(
+        child: SizedBox(
+          width: cardWidth,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SlideTransition(
+                position: _shakeAnimation,
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: _getBackgroundColor(),
+                        border: Border.all(color: _getBorderColor(), width: 2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       child: Text(
-                        _isCorrect ? 'Nice!' : (_attemptCount == 1 ? 'Try again.' : 'Next time.'),
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: _isCorrect ? Colors.green : Colors.red,
-                        ),
+                        word,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                       ),
                     ),
-                ],
+                    if (_attemptCount > 0)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text(
+                          _isCorrect ? 'Nice!' : (_attemptCount == 1 ? 'Try again.' : 'Next time.'),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: _isCorrect ? Colors.green : Colors.red,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 40),
-            TextField(
-              controller: _inputController,
-              focusNode: _focusNode,
-              enabled: !_isCorrect && _attemptCount < 2,
-              onSubmitted: !_isCorrect && _attemptCount < 2 ? (_) => _submit() : null,
-              decoration: InputDecoration(
-                hintText: _attemptCount == 1 && !_isCorrect ? 'Try again...' : 'Enter the Hungarian word',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              const SizedBox(height: 40),
+              TextField(
+                controller: _inputController,
+                focusNode: _focusNode,
+                enabled: !_isCorrect && _attemptCount < 2,
+                onSubmitted: !_isCorrect && _attemptCount < 2 ? (_) => _submit() : null,
+                decoration: InputDecoration(
+                  hintText: _attemptCount == 1 && !_isCorrect ? 'Try again...' : 'Enter the Hungarian word',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _attemptCount < 2 ? _submit : null,
-              child: const Text('Submit'),
-            ),
-          ],
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _attemptCount < 2 ? _submit : null,
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
         ),
       ),
     );
