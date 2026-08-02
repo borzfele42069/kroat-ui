@@ -2,6 +2,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kroat_ui/models/word.dart';
 
 void main() {
+  group('WordStatus Display', () {
+    test('unknown status displays as Unknown', () {
+      expect(WordStatus.unknown.displayName, equals('Unknown'));
+    });
+
+    test('inProgress status displays as In Progress', () {
+      expect(WordStatus.inProgress.displayName, equals('In Progress'));
+    });
+
+    test('learned status displays as Learned', () {
+      expect(WordStatus.learned.displayName, equals('Learned'));
+    });
+  });
+
   group('Word Model', () {
     test('word initializes with default values', () {
       final word = Word(croatian: 'Test', hungarian: 'Teszt');

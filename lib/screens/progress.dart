@@ -90,7 +90,7 @@ class ProgressScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
-                        word.status.name,
+                        word.status.displayName,
                         style: const TextStyle(fontSize: 12, color: Colors.white),
                       ),
                     ),

@@ -1,5 +1,18 @@
 enum WordStatus { unknown, inProgress, learned }
 
+extension WordStatusDisplay on WordStatus {
+  String get displayName {
+    switch (this) {
+      case WordStatus.unknown:
+        return 'Unknown';
+      case WordStatus.inProgress:
+        return 'In Progress';
+      case WordStatus.learned:
+        return 'Learned';
+    }
+  }
+}
+
 class Word {
   final String croatian;
   final String hungarian;
