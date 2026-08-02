@@ -100,6 +100,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                 position: _shakeAnimation,
                 child: Container(
                   width: double.infinity,
+                  height: 200,
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: _getBackgroundColor(),
