@@ -156,27 +156,14 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                   child: Stack(
                     children: [
                       Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              word.croatian,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-                            ),
-                            if (_answerRevealed) ...[
-                              const SizedBox(height: 16),
-                              Text(
-                                word.hungarian,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ],
+                        child: Text(
+                          _answerRevealed ? word.hungarian : word.croatian,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: _answerRevealed ? Colors.grey[600] : Colors.black,
+                          ),
                         ),
                       ),
                       if (_attemptCount > 0)
