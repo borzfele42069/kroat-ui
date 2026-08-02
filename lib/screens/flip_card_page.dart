@@ -11,8 +11,22 @@ class FlipCardPage extends StatefulWidget {
 
 class _FlipCardPageState extends State<FlipCardPage> {
   int _currentIndex = 0;
+  bool _isInitialized = false;
 
-  final words = WordService.words;
+  @override
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await WordService.initialize();
+    setState(() {
+      _isInitialized = true;
+    });
+  }
+
+  List get words => WordService.words;
 
   void _previousCard() {
     setState(() {
@@ -28,6 +42,13 @@ class _FlipCardPageState extends State<FlipCardPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Kroat Flashcards')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
     final current = words[_currentIndex];
     final screenSize = MediaQuery.of(context).size;
     final cardSize = (screenSize.width * 0.8).clamp(0.0, 400.0);
@@ -43,8 +64,8 @@ class _FlipCardPageState extends State<FlipCardPage> {
               height: cardSize,
               child: FlipCard(
                 key: ValueKey(_currentIndex),
-                croatian: current.$1,
-                hungarian: current.$2,
+                croatian: current.croatian,
+                hungarian: current.hungarian,
               ),
             ),
             const SizedBox(height: 40),
