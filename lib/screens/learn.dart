@@ -64,6 +64,8 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
       _attemptCount++;
     });
 
+    _inputController.clear();
+
     if (correct || _attemptCount >= 2) {
       Future.delayed(const Duration(milliseconds: 1000), _nextWord);
     } else {
