@@ -110,7 +110,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                     Padding(
                       padding: const EdgeInsets.only(top: 16),
                       child: Text(
-                        _isCorrect ? 'Nice!' : (_attemptCount == 1 ? 'Try again' : 'Next time'),
+                        _isCorrect ? 'Nice!' : (_attemptCount == 1 ? 'Try again.' : 'Next time.'),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
