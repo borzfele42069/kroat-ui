@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'flip_card_page.dart';
-import 'learn.dart';
+import 'learn.dart' as learn_screen;
 
 class MainMenu extends StatelessWidget {
   const MainMenu({super.key});
@@ -28,7 +28,7 @@ class MainMenu extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const LearnScreen()),
+                  MaterialPageRoute(builder: (_) => const learn_screen.LearnScreen()),
                 );
               },
               icon: const Icon(Icons.school),
