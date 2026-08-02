@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'Kroat',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        scaffoldBackgroundColor: Colors.blue[50],
+        scaffoldBackgroundColor: Colors.blue[100],
       ),
       home: const MainMenu(),
     );
