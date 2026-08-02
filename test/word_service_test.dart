@@ -159,4 +159,49 @@ void main() {
       }
     });
   });
+
+  group('WordService - Quotient Edge Cases', () {
+    test('quotient at exact minimum 0.5 stays at 0.5', () {
+      final result = WordService.updateQuotient(0.5, true, isLearned: true);
+      expect(result, equals(0.5));
+    });
+
+    test('quotient at exact maximum 3.0 stays at 3.0', () {
+      final result = WordService.updateQuotient(3.0, false, isLearned: true);
+      expect(result, equals(3.0));
+    });
+
+    test('multiple failures accumulate quotient', () {
+      var quotient = 1.0;
+      quotient = WordService.updateQuotient(quotient, false, isLearned: true);
+      expect(quotient, equals(1.2));
+      quotient = WordService.updateQuotient(quotient, false, isLearned: true);
+      expect(quotient, equals(1.4));
+    });
+
+    test('multiple successes decrease quotient', () {
+      var quotient = 2.0;
+      quotient = WordService.updateQuotient(quotient, true, isLearned: true);
+      expect(quotient, closeTo(1.9, 0.001));
+      quotient = WordService.updateQuotient(quotient, true, isLearned: true);
+      expect(quotient, closeTo(1.8, 0.001));
+    });
+  });
+
+  group('WordService - Status Edge Cases', () {
+    test('7 streak with unknown status transitions to learned', () {
+      final status = WordService.calculateNewStatus(true, 7, WordStatus.unknown);
+      expect(status, equals(WordStatus.learned));
+    });
+
+    test('6 streak is not enough to learn', () {
+      final status = WordService.calculateNewStatus(true, 6, WordStatus.unknown);
+      expect(status, equals(WordStatus.inProgress));
+    });
+
+    test('8 streak stays learned', () {
+      final status = WordService.calculateNewStatus(true, 8, WordStatus.learned);
+      expect(status, equals(WordStatus.learned));
+    });
+  });
 }
