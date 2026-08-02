@@ -24,7 +24,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     _shakeAnimation = Tween<Offset>(begin: Offset.zero, end: const Offset(0.02, 0)).animate(
       CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn),
     );
-    Future.microtask(() => _focusNode.requestFocus());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
   }
 
   @override
@@ -79,7 +79,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
       _isCorrect = false;
       _inputController.clear();
     });
-    Future.microtask(() => _focusNode.requestFocus());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
   }
 
   @override
