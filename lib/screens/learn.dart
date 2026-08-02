@@ -98,35 +98,36 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
             children: [
               SlideTransition(
                 position: _shakeAnimation,
-                child: Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: _getBackgroundColor(),
-                        border: Border.all(color: _getBorderColor(), width: 2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: _getBackgroundColor(),
+                    border: Border.all(color: _getBorderColor(), width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
                         word,
                         textAlign: TextAlign.center,
                         style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    if (_attemptCount > 0)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Text(
-                          _isCorrect ? 'Nice!' : (_attemptCount == 1 ? 'Try again.' : 'Next time.'),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: _isCorrect ? Colors.green : Colors.red,
+                      if (_attemptCount > 0)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Text(
+                            _isCorrect ? 'Nice!' : (_attemptCount == 1 ? 'Try again.' : 'Next time.'),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: _isCorrect ? Colors.green : Colors.red,
+                            ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 40),
