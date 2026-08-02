@@ -190,6 +190,34 @@ void main() {
     });
   });
 
+  group('WordService - Yellow Pass (2nd attempt correct)', () {
+    test('yellow pass on unlearned word does not change quotient', () {
+      final word = WordService.words[0];
+      word.status = WordStatus.inProgress;
+      word.quotient = 2.0;
+
+      final resultQuotient = WordService.updateQuotient(word.quotient, true, isLearned: false);
+      expect(resultQuotient, equals(2.0)); // No change
+    });
+
+    test('yellow pass on learned word increases quotient by half', () {
+      final word = WordService.words[0];
+      word.status = WordStatus.learned;
+      word.quotient = 2.0;
+
+      final resultQuotient = WordService.updateQuotient(word.quotient, true, isLearned: true, isYellowPass: true);
+      expect(resultQuotient, equals(2.05)); // +0.05 instead of -0.1
+    });
+
+    test('yellow pass quotient increase clamps to max', () {
+      final word = WordService.words[0];
+      word.quotient = 2.96;
+
+      final resultQuotient = WordService.updateQuotient(word.quotient, true, isLearned: true, isYellowPass: true);
+      expect(resultQuotient, equals(3.0)); // Clamped to max
+    });
+  });
+
   group('WordService - Status Edge Cases', () {
     test('7 streak with unknown status transitions to learned', () {
       final status = WordService.calculateNewStatus(true, 7, WordStatus.unknown);

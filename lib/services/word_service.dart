@@ -73,10 +73,13 @@ class WordService {
   /// - Correct answer: quotient -= 0.1 (makes word easier, appears less often)
   /// - Incorrect answer: quotient += 0.2 (makes word harder, appears more often)
   /// Based on Bjork's desirable difficulty principle and decades of spaced repetition research.
-  static double updateQuotient(double quotient, bool isCorrect, {bool isLearned = false}) {
+  static double updateQuotient(double quotient, bool isCorrect, {bool isLearned = false, bool isYellowPass = false}) {
     if (!isLearned) return quotient;
 
     if (isCorrect) {
+      if (isYellowPass) {
+        return (quotient + AppConstants.quotientDecrement / 2).clamp(AppConstants.quotientMin, AppConstants.quotientMax);
+      }
       return (quotient - AppConstants.quotientDecrement).clamp(AppConstants.quotientMin, AppConstants.quotientMax);
     } else {
       return (quotient + AppConstants.quotientIncrement).clamp(AppConstants.quotientMin, AppConstants.quotientMax);
