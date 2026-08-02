@@ -65,6 +65,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   void _submit() {
     final answer = _inputController.text;
     final correct = WordService.isCorrectAnswer(_currentIndex, answer);
+    final wasFirstAttempt = _attemptCount == 0;
 
     setState(() {
       _isCorrect = correct;
@@ -74,7 +75,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     _inputController.clear();
 
     if (correct) {
-      _handleCorrectAnswer();
+      _handleCorrectAnswer(wasFirstAttempt);
     } else if (_attemptCount >= 2) {
       _handleSecondFailure();
     } else {
@@ -83,14 +84,14 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     }
   }
 
-  void _handleCorrectAnswer() {
+  void _handleCorrectAnswer(bool wasFirstAttempt) {
     setState(() {
       _answerRevealed = true;
     });
 
     Future.delayed(const Duration(milliseconds: 800), () {
       final word = WordService.words[_currentIndex];
-      final isYellowPass = _attemptCount == 1;
+      final isYellowPass = !wasFirstAttempt;
 
       word.lastReviewedAt = DateTime.now();
       word.quotient = WordService.updateQuotient(word.quotient, true, isLearned: word.status == WordStatus.learned, isYellowPass: isYellowPass);
