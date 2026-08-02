@@ -62,7 +62,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     });
 
     if (correct || _attemptCount >= 2) {
-      Future.delayed(const Duration(milliseconds: 800), _nextWord);
+      Future.delayed(const Duration(milliseconds: 1500), _nextWord);
     } else {
       _triggerShake();
     }
