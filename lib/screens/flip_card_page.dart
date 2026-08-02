@@ -51,19 +51,22 @@ class _FlipCardPageState extends State<FlipCardPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: _previousCard,
-                  child: const Text('Back'),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Back'),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Exit'),
+                  icon: const Icon(Icons.close),
+                  label: const Text('Exit'),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: _nextCard,
-                  child: const Text('Next'),
+                  icon: const Icon(Icons.arrow_forward),
+                  label: const Text('Next'),
                 ),
               ],
             ),
