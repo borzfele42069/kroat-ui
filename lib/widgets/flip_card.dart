@@ -54,7 +54,7 @@ class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin
             transform: transform,
             alignment: Alignment.center,
             child: Card(
-              elevation: 4,
+              elevation: UIConstants.cardElevation,
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(

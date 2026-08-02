@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/flip_card.dart';
 import '../services/word_service.dart';
+import '../config/ui_constants.dart';
 
 class FlipCardPage extends StatefulWidget {
   const FlipCardPage({super.key});
@@ -30,7 +31,7 @@ class _FlipCardPageState extends State<FlipCardPage> {
   Widget build(BuildContext context) {
     final current = words[_currentIndex];
     final screenSize = MediaQuery.of(context).size;
-    final cardSize = (screenSize.width * 0.8).clamp(0.0, 400.0);
+    final cardSize = (screenSize.width * UIConstants.cardWidthPercent).clamp(0.0, UIConstants.cardWidthMax);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Kroat Flashcards')),
@@ -47,7 +48,7 @@ class _FlipCardPageState extends State<FlipCardPage> {
                 hungarian: current.hungarian,
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: UIConstants.spacing40),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -56,13 +57,13 @@ class _FlipCardPageState extends State<FlipCardPage> {
                   icon: const Icon(Icons.arrow_back),
                   label: const Text('Back'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: UIConstants.spacing8),
                 ElevatedButton.icon(
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(Icons.close),
                   label: const Text('Exit'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: UIConstants.spacing8),
                 ElevatedButton.icon(
                   onPressed: _nextCard,
                   icon: const Icon(Icons.arrow_forward),

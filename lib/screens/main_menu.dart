@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'flip_card_page.dart';
 import 'learn.dart' as learn_screen;
 import 'progress.dart';
+import '../config/ui_constants.dart';
 
 class MainMenu extends StatelessWidget {
   const MainMenu({super.key});
@@ -24,7 +25,7 @@ class MainMenu extends StatelessWidget {
               icon: const Icon(Icons.play_arrow),
               label: const Text('Practice'),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: UIConstants.spacing16),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
@@ -35,7 +36,7 @@ class MainMenu extends StatelessWidget {
               icon: const Icon(Icons.school),
               label: const Text('Learn'),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: UIConstants.spacing16),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
