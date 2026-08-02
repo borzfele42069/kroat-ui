@@ -53,13 +53,9 @@ class UIConstants {
     ),
   ];
 
-  // Input decoration
-  static const textFieldContentPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 16);
-
   // Progress bar height
   static const double progressBarHeight = 8;
 
   // Card elevation
   static const double cardElevation = 4;
-  static const double buttonElevation = 0;
 }
