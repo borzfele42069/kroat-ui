@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/flip_card_page.dart';
+import 'screens/main_menu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kroat',
       theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)),
-      home: const FlipCardPage(),
+      home: const MainMenu(),
     );
   }
 }

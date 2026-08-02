@@ -57,7 +57,7 @@ class _FlipCardPageState extends State<FlipCardPage> {
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.pop(context),
                   child: const Text('Exit'),
                 ),
                 const SizedBox(width: 8),
