@@ -106,8 +106,8 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     word.lastReviewedAt = DateTime.now();
 
     if (word.status == WordStatus.learned) {
-      word.quotient = (word.quotient * 0.8).clamp(0.5, 3.0);
-    } else if (word.streakCount >= 3) {
+      word.quotient = (word.quotient - 0.1).clamp(0.5, 3.0);
+    } else if (word.streakCount >= 7) {
       word.status = WordStatus.learned;
       word.quotient = 1.0;
     } else {
@@ -123,7 +123,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     final word = WordService.words[_currentIndex];
 
     if (word.status == WordStatus.learned) {
-      word.quotient = (word.quotient * 1.5).clamp(0.5, 3.0);
+      word.quotient = (word.quotient + 0.2).clamp(0.5, 3.0);
       if (word.quotient >= 3.0) {
         word.status = WordStatus.inProgress;
         word.streakCount = 0;
