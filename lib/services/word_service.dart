@@ -50,4 +50,31 @@ class WordService {
     final correctAnswer = words[index].hungarian;
     return userAnswer.trim().toLowerCase() == correctAnswer.toLowerCase();
   }
+
+  static double updateQuotient(double quotient, bool isCorrect, {bool isLearned = false}) {
+    if (!isLearned) return quotient;
+
+    if (isCorrect) {
+      return (quotient - 0.1).clamp(0.5, 3.0);
+    } else {
+      return (quotient + 0.2).clamp(0.5, 3.0);
+    }
+  }
+
+  static WordStatus calculateNewStatus(bool isCorrect, int streakCount, WordStatus currentStatus) {
+    if (isCorrect) {
+      if (currentStatus == WordStatus.learned) {
+        return WordStatus.learned;
+      } else if (streakCount >= 7) {
+        return WordStatus.learned;
+      }
+      return WordStatus.inProgress;
+    } else {
+      return WordStatus.inProgress;
+    }
+  }
+
+  static bool shouldRevertToInProgress(double quotient) {
+    return quotient >= 3.0;
+  }
 }

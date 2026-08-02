@@ -104,15 +104,8 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     final word = WordService.words[_currentIndex];
     word.streakCount++;
     word.lastReviewedAt = DateTime.now();
-
-    if (word.status == WordStatus.learned) {
-      word.quotient = (word.quotient - 0.1).clamp(0.5, 3.0);
-    } else if (word.streakCount >= 7) {
-      word.status = WordStatus.learned;
-      word.quotient = 1.0;
-    } else {
-      word.status = WordStatus.inProgress;
-    }
+    word.quotient = WordService.updateQuotient(word.quotient, true, isLearned: word.status == WordStatus.learned);
+    word.status = WordService.calculateNewStatus(true, word.streakCount, word.status);
 
     WordService.updateWord(_currentIndex, word);
     Future.delayed(const Duration(milliseconds: 1000), _selectNextWord).then((_) => setState(() {}));
@@ -121,19 +114,17 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
 
   void _handleSecondFailure() {
     final word = WordService.words[_currentIndex];
+    word.lastReviewedAt = DateTime.now();
+    word.quotient = WordService.updateQuotient(word.quotient, false, isLearned: word.status == WordStatus.learned);
 
-    if (word.status == WordStatus.learned) {
-      word.quotient = (word.quotient + 0.2).clamp(0.5, 3.0);
-      if (word.quotient >= 3.0) {
-        word.status = WordStatus.inProgress;
-        word.streakCount = 0;
-      }
-    } else {
+    if (word.status == WordStatus.learned && WordService.shouldRevertToInProgress(word.quotient)) {
+      word.status = WordStatus.inProgress;
+      word.streakCount = 0;
+    } else if (word.status != WordStatus.learned) {
       word.status = WordStatus.inProgress;
       word.streakCount = 0;
     }
 
-    word.lastReviewedAt = DateTime.now();
     WordService.updateWord(_currentIndex, word);
     Future.delayed(const Duration(milliseconds: 1000), _selectNextWord).then((_) => setState(() {}));
   }
