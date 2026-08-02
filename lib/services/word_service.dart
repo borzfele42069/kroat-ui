@@ -17,15 +17,19 @@ class WordService {
   static late List<Word> words;
 
   static Future<void> initialize() async {
-    final prefs = await SharedPreferences.getInstance();
-    final savedData = prefs.getString('words');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedData = prefs.getString('words');
 
-    if (savedData != null) {
-      final List<dynamic> decoded = jsonDecode(savedData);
-      words = decoded.map((w) => Word.fromJson(w as Map<String, dynamic>)).toList();
-    } else {
+      if (savedData != null) {
+        final List<dynamic> decoded = jsonDecode(savedData);
+        words = decoded.map((w) => Word.fromJson(w as Map<String, dynamic>)).toList();
+      } else {
+        words = _defaultWords;
+        await _saveWords();
+      }
+    } catch (e) {
       words = _defaultWords;
-      await _saveWords();
     }
   }
 
