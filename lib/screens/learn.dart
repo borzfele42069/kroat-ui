@@ -129,7 +129,9 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
-                                color: _isCorrect ? Colors.green : Colors.red,
+                                color: _isCorrect
+                                    ? (_attemptCount == 1 ? Colors.green : Colors.yellow)
+                                    : Colors.red,
                               ),
                             ),
                           ),
