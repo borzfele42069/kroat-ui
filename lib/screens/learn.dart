@@ -65,7 +65,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   Color _getBackgroundColor() {
     if (_attemptCount == 0) return Colors.white;
     if (_isCorrect) {
-      return _attemptCount == 1 ? Colors.green[100]! : Colors.yellow[100]!;
+      return _attemptCount == 1 ? Colors.green.withValues(alpha: 0.15) : Colors.yellow.withValues(alpha: 0.15);
     }
     return _attemptCount == 1 ? Colors.red[100]! : Colors.red.withValues(alpha: 0.7);
   }
