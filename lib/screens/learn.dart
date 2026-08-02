@@ -239,11 +239,6 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              Text(
-                '${word.status.name} | Streak: ${word.streakCount} | Quotient: ${word.quotient.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
             ],
           ),
         ),
