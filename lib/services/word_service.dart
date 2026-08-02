@@ -107,4 +107,23 @@ class WordService {
   static bool shouldRevertToInProgress(double quotient) {
     return quotient >= AppConstants.quotientThresholdForRevert;
   }
+
+  /// Handles failure consequences: resets streak, updates quotient, reverts status if needed.
+  /// - Streak always resets to 0
+  /// - Quotient increases by 0.2 (harder next time)
+  /// - Learned status only reverts if quotient reaches 3.0
+  /// - Unlearned/inProgress always become inProgress
+  static void handleFailure(Word word) {
+    word.lastReviewedAt = DateTime.now();
+    word.streakCount = 0;
+    word.quotient = updateQuotient(word.quotient, false, isLearned: word.status == WordStatus.learned);
+
+    if (word.status == WordStatus.learned) {
+      if (shouldRevertToInProgress(word.quotient)) {
+        word.status = WordStatus.inProgress;
+      }
+    } else {
+      word.status = WordStatus.inProgress;
+    }
+  }
 }

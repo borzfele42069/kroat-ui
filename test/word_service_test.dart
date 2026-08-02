@@ -235,6 +235,83 @@ void main() {
     });
   });
 
+  group('WordService - Failure Handling', () {
+    test('failure on unlearned word resets streak and sets inProgress', () {
+      final word = Word(
+        croatian: 'Test',
+        hungarian: 'Teszt',
+        status: WordStatus.unknown,
+        streakCount: 3,
+        quotient: 1.5,
+      );
+
+      WordService.handleFailure(word);
+
+      expect(word.streakCount, equals(0));
+      expect(word.status, equals(WordStatus.inProgress));
+    });
+
+    test('failure on learned word resets streak but keeps status until quotient >= 3.0', () {
+      final word = Word(
+        croatian: 'Test',
+        hungarian: 'Teszt',
+        status: WordStatus.learned,
+        streakCount: 5,
+        quotient: 2.0,
+      );
+
+      WordService.handleFailure(word);
+
+      expect(word.streakCount, equals(0));
+      expect(word.status, equals(WordStatus.learned)); // Still learned
+      expect(word.quotient, greaterThan(2.0)); // Quotient increased
+    });
+
+    test('failure on learned word reverts to inProgress when quotient reaches 3.0', () {
+      final word = Word(
+        croatian: 'Test',
+        hungarian: 'Teszt',
+        status: WordStatus.learned,
+        streakCount: 7,
+        quotient: 2.8,
+      );
+
+      WordService.handleFailure(word);
+
+      expect(word.streakCount, equals(0));
+      expect(word.status, equals(WordStatus.inProgress)); // Reverted
+      expect(word.quotient, equals(3.0)); // Increased to threshold
+    });
+
+    test('failure on inProgress word resets streak and keeps inProgress', () {
+      final word = Word(
+        croatian: 'Test',
+        hungarian: 'Teszt',
+        status: WordStatus.inProgress,
+        streakCount: 4,
+        quotient: 1.8,
+      );
+
+      WordService.handleFailure(word);
+
+      expect(word.streakCount, equals(0));
+      expect(word.status, equals(WordStatus.inProgress));
+    });
+
+    test('failure always updates lastReviewedAt', () {
+      final word = Word(
+        croatian: 'Test',
+        hungarian: 'Teszt',
+        lastReviewedAt: null,
+      );
+
+      WordService.handleFailure(word);
+
+      expect(word.lastReviewedAt, isNotNull);
+      expect(word.lastReviewedAt!.difference(DateTime.now()).inSeconds, lessThan(1));
+    });
+  });
+
   group('WordService - Word Selection', () {
     test('selectWordByQuotient returns valid index', () {
       final index = WordService.selectWordByQuotient();
