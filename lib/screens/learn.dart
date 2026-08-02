@@ -15,6 +15,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   late AnimationController _shakeController;
   late Animation<Offset> _shakeAnimation;
   final _inputController = TextEditingController();
+  final _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -29,6 +30,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   void dispose() {
     _shakeController.dispose();
     _inputController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -65,6 +67,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
       Future.delayed(const Duration(milliseconds: 1000), _nextWord);
     } else {
       _triggerShake();
+      _focusNode.requestFocus();
     }
   }
 
@@ -124,6 +127,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
             const SizedBox(height: 40),
             TextField(
               controller: _inputController,
+              focusNode: _focusNode,
               enabled: !_isCorrect && _attemptCount < 2,
               onSubmitted: !_isCorrect && _attemptCount < 2 ? (_) => _submit() : null,
               decoration: InputDecoration(
