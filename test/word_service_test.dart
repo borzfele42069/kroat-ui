@@ -207,6 +207,40 @@ void main() {
     });
   });
 
+  group('WordService - Word Selection', () {
+    test('selectWordByQuotient returns valid index', () {
+      final index = WordService.selectWordByQuotient();
+      expect(index, greaterThanOrEqualTo(0));
+      expect(index, lessThan(WordService.words.length));
+    });
+
+    test('selectWordByQuotient favors higher quotient words', () {
+      final counts = <int, int>{};
+      for (int i = 0; i < 1000; i++) {
+        final index = WordService.selectWordByQuotient();
+        counts[index] = (counts[index] ?? 0) + 1;
+      }
+
+      final maxQuotientIndex = WordService.words
+          .asMap()
+          .entries
+          .reduce((a, b) => a.value.quotient > b.value.quotient ? a : b)
+          .key;
+
+      expect(counts[maxQuotientIndex]!, greaterThan(counts.values.reduce((a, b) => a < b ? a : b)));
+    });
+
+    test('selectWordByQuotient handles equal quotients', () {
+      for (var word in WordService.words) {
+        word.quotient = 1.0;
+      }
+
+      final index = WordService.selectWordByQuotient();
+      expect(index, greaterThanOrEqualTo(0));
+      expect(index, lessThan(WordService.words.length));
+    });
+  });
+
   group('WordService - Persistence', () {
     test('loads saved words from SharedPreferences', () async {
       final savedWords = [

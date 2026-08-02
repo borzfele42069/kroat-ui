@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 import '../services/word_service.dart';
 import '../models/word.dart';
 
@@ -32,22 +31,10 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   }
 
   void _selectNextWord() {
-    _currentIndex = _selectWordByQuotient();
+    _currentIndex = WordService.selectWordByQuotient();
     _attemptCount = 0;
     _isCorrect = false;
     _inputController.clear();
-  }
-
-  int _selectWordByQuotient() {
-    final random = Random();
-    final totalWeight = WordService.words.fold<double>(0, (sum, word) => sum + word.quotient);
-    double pick = random.nextDouble() * totalWeight;
-
-    for (int i = 0; i < WordService.words.length; i++) {
-      pick -= WordService.words[i].quotient;
-      if (pick <= 0) return i;
-    }
-    return 0;
   }
 
   @override

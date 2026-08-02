@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/word.dart';
 
@@ -48,6 +49,18 @@ class WordService {
 
   static int nextIndex(int current, int total) => (current + 1) % total;
   static int prevIndex(int current, int total) => (current - 1 + total) % total;
+
+  static int selectWordByQuotient() {
+    final random = Random();
+    final totalWeight = words.fold<double>(0, (sum, word) => sum + word.quotient);
+    double pick = random.nextDouble() * totalWeight;
+
+    for (int i = 0; i < words.length; i++) {
+      pick -= words[i].quotient;
+      if (pick <= 0) return i;
+    }
+    return 0;
+  }
 
   static bool isCorrectAnswer(int index, String userAnswer) {
     if (index < 0 || index >= words.length) return false;
