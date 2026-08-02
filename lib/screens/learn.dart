@@ -83,14 +83,18 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   }
 
   void _handleCorrectAnswer() {
-    final word = WordService.words[_currentIndex];
-    word.streakCount++;
-    word.lastReviewedAt = DateTime.now();
-    word.quotient = WordService.updateQuotient(word.quotient, true, isLearned: word.status == WordStatus.learned);
-    word.status = WordService.calculateNewStatus(true, word.streakCount, word.status);
+    setState(() {
+      _answerRevealed = true;
+    });
 
-    WordService.updateWord(_currentIndex, word);
-    Future.delayed(const Duration(milliseconds: 1000), () {
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      final word = WordService.words[_currentIndex];
+      word.streakCount++;
+      word.lastReviewedAt = DateTime.now();
+      word.quotient = WordService.updateQuotient(word.quotient, true, isLearned: word.status == WordStatus.learned);
+      word.status = WordService.calculateNewStatus(true, word.streakCount, word.status);
+
+      WordService.updateWord(_currentIndex, word);
       _selectNextWord();
       setState(() {});
       WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
@@ -173,7 +177,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                           right: 0,
                           child: Center(
                             child: Text(
-                              _isCorrect ? 'Nice!' : (_attemptCount == 1 ? 'Try again.' : 'Next time.'),
+                              _isCorrect ? 'Nice!' : 'Try again.',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
