@@ -14,6 +14,8 @@ class UIConstants {
 
   // Font sizes
   static const double fontSizeWordCard = 36;
+  static const double fontSizeTitle = 18;
+  static const double fontSizeLarge = 14;
   static const double fontSizeLabel = 12;
   static const double fontSizeMessage = 18;
   static const double fontSizeHint = 11;
@@ -32,13 +34,27 @@ class UIConstants {
   static const double borderRadiusMedium = 8;
   static const double borderRadiusLarge = 12;
 
-  // Colors
+  // Colors - Status badges
   static const Color colorStatusUnknown = Colors.grey;
   static const Color colorStatusInProgress = Colors.blue;
   static const Color colorStatusLearned = Colors.green;
+
+  // Colors - Text
   static const Color colorTextHint = Colors.white70;
   static const Color colorTextWhite = Colors.white;
+  static const Color colorTextSecondary = Colors.grey;
   static const Color colorCardElevation = Colors.black12;
+
+  // Colors - Response backgrounds
+  static final Color colorCorrectFirstTry = Colors.green[300]!.withValues(alpha: 0.6);
+  static final Color colorCorrectSecondTry = Colors.yellow[300]!.withValues(alpha: 0.6);
+  static final Color colorIncorrectFirst = Colors.red[100]!;
+  static final Color colorIncorrectSecond = Colors.red.withValues(alpha: 0.7);
+
+  // Colors - Response message text
+  static const Color colorMessageCorrectFirst = Color(0xFF558B2F); // green[700]
+  static const Color colorMessageCorrectSecond = Color(0xFFF57F17); // yellow[700]
+  static const Color colorMessageIncorrect = Color(0xFFC62828); // red[700]
 
   // Gradient colors for flip card
   static const List<Color> gradientFront = [Colors.blue, Colors.purple];

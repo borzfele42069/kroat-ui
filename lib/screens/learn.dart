@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/word_service.dart';
 import '../models/word.dart';
+import '../config/ui_constants.dart';
 
 class LearnScreen extends StatefulWidget {
   const LearnScreen({super.key});
@@ -23,7 +24,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _shakeController = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    _shakeController = AnimationController(duration: const Duration(milliseconds: UIConstants.shakeAnimationDuration), vsync: this);
     _shakeAnimation = Tween<Offset>(begin: Offset.zero, end: const Offset(0.02, 0)).animate(
       CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn),
     );
@@ -55,10 +56,10 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     if (_attemptCount == 0) return Colors.white;
     if (_isCorrect) {
       return _attemptCount == 1
-        ? Colors.green[300]!.withValues(alpha: 0.6)
-        : Colors.yellow[300]!.withValues(alpha: 0.6);
+        ? UIConstants.colorCorrectFirstTry
+        : UIConstants.colorCorrectSecondTry;
     }
-    return _attemptCount == 1 ? Colors.red[100]! : Colors.red.withValues(alpha: 0.7);
+    return _attemptCount == 1 ? UIConstants.colorIncorrectFirst : UIConstants.colorIncorrectSecond;
   }
 
   void _submit() {
@@ -89,10 +90,19 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
 
     Future.delayed(const Duration(milliseconds: 800), () {
       final word = WordService.words[_currentIndex];
-      word.streakCount++;
+      final isYellowPass = _attemptCount == 1;
+
       word.lastReviewedAt = DateTime.now();
-      word.quotient = WordService.updateQuotient(word.quotient, true, isLearned: word.status == WordStatus.learned);
-      word.status = WordService.calculateNewStatus(true, word.streakCount, word.status);
+      word.quotient = WordService.updateQuotient(word.quotient, true, isLearned: word.status == WordStatus.learned, isYellowPass: isYellowPass);
+
+      if (isYellowPass) {
+        if (word.status == WordStatus.learned) {
+          word.streakCount++;
+        }
+      } else {
+        word.streakCount++;
+        word.status = WordService.calculateNewStatus(true, word.streakCount, word.status);
+      }
 
       WordService.updateWord(_currentIndex, word);
       _selectNextWord();
@@ -130,7 +140,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     final word = WordService.words[_currentIndex];
     final screenSize = MediaQuery.of(context).size;
-    final cardWidth = (screenSize.width * 0.8).clamp(0.0, 400.0);
+    final cardWidth = (screenSize.width * UIConstants.cardWidthPercent).clamp(0.0, UIConstants.cardWidthMax);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Learn')),
@@ -144,18 +154,12 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                 position: _shakeAnimation,
                 child: Container(
                   width: double.infinity,
-                  height: 200,
-                  padding: const EdgeInsets.all(24),
+                  height: UIConstants.cardHeightLearn,
+                  padding: const EdgeInsets.all(UIConstants.spacing24),
                   decoration: BoxDecoration(
                     color: _getBackgroundColor(),
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    borderRadius: BorderRadius.circular(UIConstants.borderRadiusMedium),
+                    boxShadow: UIConstants.boxShadow,
                   ),
                   child: Stack(
                     children: [
@@ -164,9 +168,9 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                           _answerRevealed ? word.hungarian : word.croatian,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 36,
+                            fontSize: UIConstants.fontSizeWordCard,
                             fontWeight: FontWeight.bold,
-                            color: _answerRevealed ? Colors.white : Colors.black,
+                            color: _answerRevealed ? UIConstants.colorTextWhite : Colors.black,
                           ),
                         ),
                       ),
@@ -179,11 +183,11 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                             child: Text(
                               _isCorrect ? 'Nice!' : 'Try again.',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: UIConstants.fontSizeMessage,
                                 fontWeight: FontWeight.w500,
                                 color: _isCorrect
-                                    ? (_attemptCount == 1 ? Colors.green[700] : Colors.yellow[700])
-                                    : Colors.red[700],
+                                    ? (_attemptCount == 1 ? UIConstants.colorMessageCorrectFirst : UIConstants.colorMessageCorrectSecond)
+                                    : UIConstants.colorMessageIncorrect,
                               ),
                             ),
                           ),
@@ -192,20 +196,14 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: UIConstants.spacing40),
               Row(
                 children: [
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                        borderRadius: BorderRadius.circular(UIConstants.borderRadiusMedium),
+                        boxShadow: UIConstants.boxShadow,
                       ),
                       child: TextField(
                         controller: _inputController,
@@ -217,23 +215,23 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                           fillColor: Colors.white,
                           hintText: _attemptCount == 1 && !_isCorrect ? 'Try again...' : 'Enter the Hungarian word',
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(UIConstants.borderRadiusMedium),
                             borderSide: BorderSide.none,
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(UIConstants.borderRadiusMedium),
                             borderSide: BorderSide.none,
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(UIConstants.borderRadiusMedium),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                          contentPadding: EdgeInsets.symmetric(horizontal: UIConstants.spacing12, vertical: UIConstants.spacing16),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: UIConstants.spacing8),
                   ElevatedButton(
                     onPressed: _attemptCount < 2 ? _submit : null,
                     child: const Text('Submit'),
