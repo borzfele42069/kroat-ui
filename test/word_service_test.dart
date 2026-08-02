@@ -130,4 +130,33 @@ void main() {
       expect(isCorrect, isFalse);
     });
   });
+
+  group('WordService - Data Integrity', () {
+    test('words list is populated after initialize', () {
+      expect(WordService.words, isNotEmpty);
+      expect(WordService.words.length, equals(8));
+    });
+
+    test('first word is Zdravo/Szia', () {
+      expect(WordService.words[0].croatian, equals('Zdravo'));
+      expect(WordService.words[0].hungarian, equals('Szia'));
+    });
+
+    test('all words have default unknown status', () {
+      for (final word in WordService.words) {
+        expect(word.status, anyOf(
+          WordStatus.unknown,
+          WordStatus.inProgress,
+          WordStatus.learned,
+        ));
+      }
+    });
+
+    test('all words have valid quotient values', () {
+      for (final word in WordService.words) {
+        expect(word.quotient, greaterThanOrEqualTo(0.5));
+        expect(word.quotient, lessThanOrEqualTo(3.0));
+      }
+    });
+  });
 }
