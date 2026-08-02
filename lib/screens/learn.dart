@@ -18,6 +18,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   int _currentIndex = 0;
   int _attemptCount = 0;
   bool _isCorrect = false;
+  bool _answerRevealed = false;
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
     _currentIndex = WordService.selectWordByQuotient();
     _attemptCount = 0;
     _isCorrect = false;
+    _answerRevealed = false;
     _inputController.clear();
   }
 
@@ -96,20 +98,24 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
   }
 
   void _handleSecondFailure() {
-    final word = WordService.words[_currentIndex];
-    word.lastReviewedAt = DateTime.now();
-    word.quotient = WordService.updateQuotient(word.quotient, false, isLearned: word.status == WordStatus.learned);
+    setState(() {
+      _answerRevealed = true;
+    });
 
-    if (word.status == WordStatus.learned && WordService.shouldRevertToInProgress(word.quotient)) {
-      word.status = WordStatus.inProgress;
-      word.streakCount = 0;
-    } else if (word.status != WordStatus.learned) {
-      word.status = WordStatus.inProgress;
-      word.streakCount = 0;
-    }
+    Future.delayed(const Duration(milliseconds: 2000), () {
+      final word = WordService.words[_currentIndex];
+      word.lastReviewedAt = DateTime.now();
+      word.quotient = WordService.updateQuotient(word.quotient, false, isLearned: word.status == WordStatus.learned);
 
-    WordService.updateWord(_currentIndex, word);
-    Future.delayed(const Duration(milliseconds: 1000), () {
+      if (word.status == WordStatus.learned && WordService.shouldRevertToInProgress(word.quotient)) {
+        word.status = WordStatus.inProgress;
+        word.streakCount = 0;
+      } else if (word.status != WordStatus.learned) {
+        word.status = WordStatus.inProgress;
+        word.streakCount = 0;
+      }
+
+      WordService.updateWord(_currentIndex, word);
       _selectNextWord();
       setState(() {});
       WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
@@ -150,10 +156,27 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                   child: Stack(
                     children: [
                       Center(
-                        child: Text(
-                          word.croatian,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              word.croatian,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                            ),
+                            if (_answerRevealed) ...[
+                              const SizedBox(height: 16),
+                              Text(
+                                word.hungarian,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
                       if (_attemptCount > 0)
