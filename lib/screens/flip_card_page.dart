@@ -2,14 +2,6 @@ import 'package:flutter/material.dart';
 import '../widgets/flip_card.dart';
 import '../services/word_service.dart';
 
-int getNextIndex(int currentIndex, int totalItems) {
-  return (currentIndex + 1) % totalItems;
-}
-
-int getPreviousIndex(int currentIndex, int totalItems) {
-  return (currentIndex - 1 + totalItems) % totalItems;
-}
-
 class FlipCardPage extends StatefulWidget {
   const FlipCardPage({super.key});
 
@@ -20,17 +12,17 @@ class FlipCardPage extends StatefulWidget {
 class _FlipCardPageState extends State<FlipCardPage> {
   int _currentIndex = 0;
 
-  final words = WordService.getWords();
+  final words = WordService.words;
 
   void _previousCard() {
     setState(() {
-      _currentIndex = getPreviousIndex(_currentIndex, words.length);
+      _currentIndex = (_currentIndex - 1 + words.length) % words.length;
     });
   }
 
   void _nextCard() {
     setState(() {
-      _currentIndex = getNextIndex(_currentIndex, words.length);
+      _currentIndex = (_currentIndex + 1) % words.length;
     });
   }
 

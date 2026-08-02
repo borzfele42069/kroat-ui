@@ -9,6 +9,4 @@ class WordService {
     ('Hrana', 'Étel'),
     ('Kuća', 'Ház'),
   ];
-
-  static List<(String, String)> getWords() => words;
 }
