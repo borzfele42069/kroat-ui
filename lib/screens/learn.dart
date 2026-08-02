@@ -126,10 +126,12 @@ class _LearnScreenState extends State<LearnScreen> with TickerProviderStateMixin
                           child: Center(
                             child: Text(
                               _isCorrect ? 'Nice!' : (_attemptCount == 1 ? 'Try again.' : 'Next time.'),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.white,
+                                color: _isCorrect
+                                    ? (_attemptCount == 1 ? Colors.green[700] : Colors.yellow[700])
+                                    : Colors.red[700],
                               ),
                             ),
                           ),
