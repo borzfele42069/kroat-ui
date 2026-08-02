@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+import '../config/ui_constants.dart';
 
 class FlipCard extends StatefulWidget {
   final String croatian;
@@ -17,7 +19,7 @@ class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    _controller = AnimationController(duration: const Duration(milliseconds: UIConstants.flipAnimationDuration), vsync: this);
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller);
   }
 
@@ -43,7 +45,7 @@ class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin
         animation: _animation,
         builder: (context, child) {
           final isFlipped = _animation.value > 0.5;
-          final angle = _animation.value * 3.14159;
+          final angle = _animation.value * pi;
           final transform = Matrix4.identity()
             ..setEntry(3, 2, 0.001)
             ..rotateY(angle);
@@ -56,11 +58,11 @@ class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: isFlipped ? [Colors.orange, Colors.red] : [Colors.blue, Colors.purple],
+                    colors: isFlipped ? UIConstants.gradientBack : UIConstants.gradientFront,
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(UIConstants.borderRadiusLarge),
                 ),
                 child: Center(
                   child: Transform(
@@ -71,14 +73,14 @@ class _FlipCardState extends State<FlipCard> with SingleTickerProviderStateMixin
                       children: [
                         Text(
                           isFlipped ? 'Hungarian' : 'Croatian',
-                          style: const TextStyle(color: Colors.white70, fontSize: 12),
+                          style: const TextStyle(color: UIConstants.colorTextHint, fontSize: UIConstants.fontSizeLabel),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: UIConstants.spacing8),
                         Text(
                           isFlipped ? widget.hungarian : widget.croatian,
                           style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 36,
+                            color: UIConstants.colorTextWhite,
+                            fontSize: UIConstants.fontSizeWordCard,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
